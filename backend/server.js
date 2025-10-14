@@ -5,14 +5,20 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
 const http = require("http");
-const { Server } = require("socket.io");
+const socketIo = require("socket.io");   // ✅ Add this
 
 const app = express();
 const PORT = 8000;
 
 // ------------------- HTTP & Socket.IO -------------------
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+
+const io = socketIo(server, {
+  cors: {
+    origin: 'https://verdaunt.netlify.app',
+    methods: ['GET', 'POST']
+  }
+});
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
