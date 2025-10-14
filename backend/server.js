@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ------------------- MongoDB -------------------
-const MONGO_URI = "mongodb+srv://<YOUR_MONGO_URI>";
+const MONGO_URI = "mongodb+srv://devarapallyashrithreddy_db_user:13-01-2007@cluster0.ob19tju.mongodb.net/";
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
