@@ -15,7 +15,7 @@ export default function App() {
   useEffect(() => {
     const fetchDroneData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/data/latest");
+        const response = await axios.get("https://verdant-1-rg7g.onrender.com/api/data/latest");
         const data = response.data.data;
         if (data) setDroneData({ ...data, image: data.image_path });
       } catch (err) {
@@ -73,7 +73,7 @@ export default function App() {
 
         {droneData.image && (
           <div className="mt-4 text-center">
-            <img src={`http://localhost:8000${droneData.image}`} alt="Drone" className="mx-auto max-w-full rounded-lg shadow-md" />
+            <img src={`https://verdant-1-rg7g.onrender.com${droneData.image}`} alt="Drone" className="mx-auto max-w-full rounded-lg shadow-md" />
           </div>
         )}
       </motion.div>
