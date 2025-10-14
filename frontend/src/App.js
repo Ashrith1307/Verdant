@@ -5,7 +5,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import './App.css';
 
-const socket = io("http://localhost:8000");
+const socket = io("https://verdant-1-rg7g.onrender.com");
 
 export default function App() {
   const [droneData, setDroneData] = useState({});
