@@ -63,7 +63,7 @@ export default function App() {
         <div className="info-section">
           <div className="info-card">
             <Leaf size={24} />
-            <span style={{ color: 'yellow' }}>Crop: {droneData.crop || "Cotton"}</span>
+            <span style={{ color: 'blue' }}>Crop: {droneData.crop || "Cotton"}</span>
           </div>
           <div className="info-card">
             <Sprout size={24} />
@@ -75,7 +75,7 @@ export default function App() {
           </div>
           <div className="info-card">
             <CloudSun size={24} />
-            <span>Temperature: {droneData.temperature || "31 C"} °C</span>
+            <span>Temperature: {droneData.temperature || "31"} °C</span>
           </div>
           <div className="info-card">
             <Activity size={24} />
