@@ -1,44 +1,57 @@
+// ------------------- Imports -------------------
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
+const fs = require("fs");
 const mongoose = require("mongoose");
 const http = require("http");
-const socketIo = require("socket.io");   // ✅ Add this
+const socketIo = require("socket.io");
 
+// ------------------- App & Server Setup -------------------
 const app = express();
-const PORT = 8000;
-
-// ------------------- HTTP & Socket.IO -------------------
+const PORT = process.env.PORT || 8000;
 const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: 'https://verdaunt.netlify.app',
-    methods: ['GET', 'POST']
+    origin: [
+          
+      "https://verdaunt.netlify.app" // for Netlify deployment
+    ],
+    methods: ["GET", "POST"]
   }
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+  console.log("✅ Client connected:", socket.id);
+  socket.on("disconnect", () => console.log("❌ Client disconnected:", socket.id));
 });
 
 // ------------------- Middleware -------------------
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(express.urlencoded({ extended: true }));
+
+// Ensure uploads directory exists (important for Render)
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+  console.log("📁 Created uploads directory");
+}
+
+// Serve static files (images)
+app.use("/uploads", express.static(uploadDir));
 
 // ------------------- MongoDB -------------------
 const MONGO_URI = "mongodb+srv://devarapallyashrithreddy_db_user:13-01-2007@cluster0.ob19tju.mongodb.net/";
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("MongoDB connected"))
-.catch((err) => console.log("MongoDB connection error:", err));
 
-// ------------------- Mongoose Schema -------------------
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
+
+// ------------------- Schema -------------------
 const droneDataSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
   location: { lat: Number, lon: Number },
@@ -50,18 +63,20 @@ const droneDataSchema = new mongoose.Schema({
 
 const DroneData = mongoose.model("DroneData", droneDataSchema);
 
-// ------------------- Multer -------------------
+// ------------------- Multer Setup -------------------
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "_" + file.originalname),
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, Date.now() + "_" + file.originalname)
 });
+
 const upload = multer({ storage });
 
 // ------------------- Routes -------------------
 
-// Upload drone data
+// Upload from Raspberry Pi
 app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
+    // Ensure metadata is received and parsed correctly
     const metadata = JSON.parse(req.body.metadata);
 
     const newRecord = new DroneData({
@@ -75,23 +90,25 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
 
     await newRecord.save();
 
-    // Emit real-time update
+    // Emit to connected clients in real-time
     io.emit("drone-update", {
       disease: newRecord.disease_detection,
-      infection: "Medium", // placeholder
+      infection: "Medium",
       pesticide: newRecord.pesticide_recommendation,
-      precautions: "Check infected area and apply recommended pesticide",
+      precautions: "Inspect infected area and apply recommended pesticide.",
       yieldLoss: "N/A",
       image: newRecord.image_path,
     });
 
+    console.log("📡 New drone data broadcasted via socket.io");
     res.json({ status: "success", record: newRecord });
   } catch (err) {
+    console.error("Upload error:", err.message);
     res.status(400).json({ status: "error", message: err.message });
   }
 });
 
-// Get latest drone data
+// Fetch latest drone data
 app.get("/api/data/latest", async (req, res) => {
   try {
     const latest = await DroneData.findOne().sort({ timestamp: -1 });
@@ -101,5 +118,12 @@ app.get("/api/data/latest", async (req, res) => {
   }
 });
 
-// Start server
-server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// Health check
+app.get("/", (req, res) => {
+  res.send("🌱 Verdanaut backend is running!");
+});
+
+// ------------------- Start Server -------------------
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
