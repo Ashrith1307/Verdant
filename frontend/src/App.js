@@ -63,15 +63,15 @@ export default function App() {
         <div className="info-section">
           <div className="info-card">
             <Leaf size={24} />
-            <span>Crop: {droneData.crop || "Cotton"}</span>
+            <span style={{ color: 'yellow' }}>Crop: {droneData.crop || "Cotton"}</span>
           </div>
           <div className="info-card">
             <Sprout size={24} />
-            <span>Pesticide: {droneData.pesticide || "esv"}</span>
+            <span style={{ color: 'green' }}>Pesticide: {droneData.pesticide || "esv"}</span>
           </div>
           <div className="info-card">
             <AlertTriangle size={24} />
-            <span>Disease: {droneData.disease || "wegu"}</span>
+            <span style={{ color: 'red' }}>Disease: {droneData.disease || "wegu"}</span>
           </div>
           <div className="info-card">
             <CloudSun size={24} />
