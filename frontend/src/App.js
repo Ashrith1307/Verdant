@@ -75,11 +75,11 @@ export default function App() {
           </div>
           <div className="info-card">
             <CloudSun size={24} />
-            <span>Temperature: {droneData.temperature || "31"} °C</span>
+            <span style={{ color: 'orange' }}>Temperature: {droneData.temperature || "31"} °C</span>
           </div>
           <div className="info-card">
             <Activity size={24} />
-            <span>Humidity: {droneData.humidity || "64"} %</span>
+            <span style={{ color: 'brown' }}>Humidity: {droneData.humidity || "64"} %</span>
           </div>
         </div>
       </motion.div>
