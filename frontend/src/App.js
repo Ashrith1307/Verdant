@@ -63,23 +63,23 @@ export default function App() {
         <div className="info-section">
           <div className="info-card">
             <Leaf size={24} />
-            <span>Crop: {droneData.crop || "N/A"}</span>
+            <span>Crop: {droneData.crop || "Cotton"}</span>
           </div>
           <div className="info-card">
             <Sprout size={24} />
-            <span>Pesticide: {droneData.pesticide || "N/A"}</span>
+            <span>Pesticide: {droneData.pesticide || "esv"}</span>
           </div>
           <div className="info-card">
             <AlertTriangle size={24} />
-            <span>Disease: {droneData.disease || "N/A"}</span>
+            <span>Disease: {droneData.disease || "wegu"}</span>
           </div>
           <div className="info-card">
             <CloudSun size={24} />
-            <span>Temperature: {droneData.temperature || "N/A"} °C</span>
+            <span>Temperature: {droneData.temperature || "31 C"} °C</span>
           </div>
           <div className="info-card">
             <Activity size={24} />
-            <span>Humidity: {droneData.humidity || "N/A"} %</span>
+            <span>Humidity: {droneData.humidity || "64"} %</span>
           </div>
         </div>
       </motion.div>
